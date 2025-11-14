@@ -17,11 +17,13 @@ export async function GET(request: NextRequest, { params }: Params) {
     .eq("short_code", code)
     .maybeSingle();
 
-  if (error || !url || !url.is_active) {
+  if (error || !url || !(url as any).is_active) {
     return NextResponse.redirect(new URL("/", request.url), 302);
   }
 
-  if (url.expires_at && new Date(url.expires_at) < new Date()) {
+  const urlData = url as any;
+
+  if (urlData.expires_at && new Date(urlData.expires_at) < new Date()) {
     return NextResponse.redirect(new URL("/", request.url), 302);
   }
 
@@ -30,11 +32,11 @@ export async function GET(request: NextRequest, { params }: Params) {
   const ip = request.ip ?? request.headers.get("x-forwarded-for") ?? "";
 
   await supabase.from("analytics").insert({
-    url_id: url.id,
+    url_id: urlData.id,
     referer,
     user_agent: userAgent,
     ip_address: ip,
   });
 
-  return NextResponse.redirect(url.original_url, 302);
+  return NextResponse.redirect(urlData.original_url, 302);
 }
