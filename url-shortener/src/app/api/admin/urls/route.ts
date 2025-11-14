@@ -21,7 +21,7 @@ export async function GET() {
     return NextResponse.json({ message: "Unable to fetch urls" }, { status: 500 });
   }
 
-  const baseUrl = process.env.BASE_URL ?? "http://localhost:3000";
+  const baseUrl = process.env.BASE_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
 
   const urls = (data ?? []).map((u: any) => ({
     ...u,

@@ -5,6 +5,7 @@ import { getSupabaseServiceClient } from "./db";
 
 const config = {
   trustHost: true,
+  basePath: "/api/auth",
   session: {
     strategy: "jwt" as const,
   },

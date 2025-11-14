@@ -76,7 +76,7 @@ export async function POST(request: Request) {
   }
 
   const urlData = data as any;
-  const baseUrl = process.env.BASE_URL ?? "http://localhost:3000";
+  const baseUrl = process.env.BASE_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
 
   return NextResponse.json(
     {

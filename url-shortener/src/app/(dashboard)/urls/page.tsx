@@ -23,7 +23,7 @@ export default async function UrlsPage() {
     .eq("user_id", session.user.id)
     .order("created_at", { ascending: false });
 
-  const baseUrl = process.env.BASE_URL ?? "http://localhost:3000";
+  const baseUrl = process.env.BASE_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
   const urls = (data ?? []).map((u: any) => ({
     id: u.id,
     originalUrl: u.original_url,
