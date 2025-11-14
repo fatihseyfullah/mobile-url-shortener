@@ -97,7 +97,14 @@ export async function POST(request: Request) {
   }
 
   const urlData = data as any;
-  const baseUrl = process.env.BASE_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
+  
+  // Get base URL from environment or request host
+  let baseUrl = process.env.BASE_URL || process.env.NEXTAUTH_URL;
+  if (!baseUrl || baseUrl.includes('your-app')) {
+    const host = request.headers.get('host');
+    const protocol = request.headers.get('x-forwarded-proto') || 'https';
+    baseUrl = host ? `${protocol}://${host}` : 'http://localhost:3000';
+  }
 
   return NextResponse.json(
     {

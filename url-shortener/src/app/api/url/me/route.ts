@@ -34,7 +34,13 @@ export async function GET(request: Request) {
       return NextResponse.json({ message: "Unable to fetch URLs" }, { status: 500 });
     }
 
-    const baseUrl = process.env.BASE_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
+    // Get base URL from environment or request host
+    let baseUrl = process.env.BASE_URL || process.env.NEXTAUTH_URL;
+    if (!baseUrl || baseUrl.includes('your-app')) {
+      const host = request.headers.get('host');
+      const protocol = request.headers.get('x-forwarded-proto') || 'https';
+      baseUrl = host ? `${protocol}://${host}` : 'http://localhost:3000';
+    }
 
     const urlsWithShort = (data ?? []).map((u: any) => ({
       ...u,
