@@ -24,7 +24,7 @@ export default async function UrlsPage() {
     .order("created_at", { ascending: false });
 
   const baseUrl = process.env.BASE_URL ?? "http://localhost:3000";
-  const urls = (data ?? []).map((u) => ({
+  const urls = (data ?? []).map((u: any) => ({
     id: u.id,
     originalUrl: u.original_url,
     shortUrl: `${baseUrl}/${u.short_code}`,
