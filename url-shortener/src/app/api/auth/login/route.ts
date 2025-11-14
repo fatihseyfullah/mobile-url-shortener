@@ -22,17 +22,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
   }
 
-  const valid = await compare(password, user.password_hash);
+  const userData = user as any;
+  const valid = await compare(password, userData.password_hash);
   if (!valid) {
     return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
   }
 
   return NextResponse.json({
     user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      is_admin: user.is_admin,
+      id: userData.id,
+      email: userData.email,
+      name: userData.name,
+      is_admin: userData.is_admin,
     },
   });
 }

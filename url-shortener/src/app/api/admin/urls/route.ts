@@ -23,7 +23,7 @@ export async function GET() {
 
   const baseUrl = process.env.BASE_URL ?? "http://localhost:3000";
 
-  const urls = (data ?? []).map((u) => ({
+  const urls = (data ?? []).map((u: any) => ({
     ...u,
     short_url: `${baseUrl}/${u.short_code}`,
   }));

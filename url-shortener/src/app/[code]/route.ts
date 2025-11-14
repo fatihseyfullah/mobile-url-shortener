@@ -29,9 +29,9 @@ export async function GET(request: NextRequest, { params }: Params) {
 
   const referer = request.headers.get("referer");
   const userAgent = request.headers.get("user-agent");
-  const ip = request.ip ?? request.headers.get("x-forwarded-for") ?? "";
+  const ip = (request as any).ip ?? request.headers.get("x-forwarded-for") ?? "";
 
-  await supabase.from("analytics").insert({
+  await (supabase.from("analytics") as any).insert({
     url_id: urlData.id,
     referer,
     user_agent: userAgent,

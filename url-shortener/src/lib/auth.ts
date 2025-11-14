@@ -3,7 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { getSupabaseServiceClient } from "./db";
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+const config = {
   session: {
     strategy: "jwt",
   },
@@ -27,32 +27,35 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (error || !user) return null;
 
-        const valid = await compare(credentials.password, user.password_hash);
+        const userData = user as any;
+        const valid = await compare(credentials.password as string, userData.password_hash);
         if (!valid) return null;
 
         return {
-          id: user.id,
-          email: user.email,
-          name: user.name ?? undefined,
-          is_admin: user.is_admin,
+          id: userData.id,
+          email: userData.email,
+          name: userData.name ?? undefined,
+          is_admin: userData.is_admin,
         } as any;
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: any) {
       if (user) {
-        (token as any).userId = (user as any).id;
-        (token as any).is_admin = (user as any).is_admin ?? false;
+        token.userId = user.id;
+        token.is_admin = user.is_admin ?? false;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       if (session.user) {
-        (session.user as any).id = (token as any).userId as string;
-        (session.user as any).is_admin = (token as any).is_admin ?? false;
+        session.user.id = token.userId as string;
+        session.user.is_admin = token.is_admin ?? false;
       }
       return session;
     },
   },
-});
+};
+
+export const { handlers, signIn, signOut, auth } = (NextAuth as any).default ? (NextAuth as any).default(config) : (NextAuth as any)(config);

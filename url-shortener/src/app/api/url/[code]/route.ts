@@ -27,7 +27,7 @@ export async function GET(_request: Request, { params }: Params) {
     return NextResponse.json({ message: "Not found" }, { status: 404 });
   }
 
-  if (data.user_id !== session.user.id && !session.user.is_admin) {
+  if ((data as any).user_id !== session.user.id && !(session.user as any).is_admin) {
     return NextResponse.json({ message: "Forbidden" }, { status: 403 });
   }
 

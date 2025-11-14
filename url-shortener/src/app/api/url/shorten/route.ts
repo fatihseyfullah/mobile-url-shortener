@@ -64,8 +64,8 @@ export async function POST(request: Request) {
     insertPayload.expires_at = new Date(expiresAt).toISOString();
   }
 
-  const { data, error } = await supabase
-    .from("urls")
+  const { data, error } = await (supabase
+    .from("urls") as any)
     .insert(insertPayload)
     .select("id, original_url, short_code, expires_at, created_at")
     .single();
@@ -75,17 +75,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Unable to shorten URL" }, { status: 500 });
   }
 
+  const urlData = data as any;
   const baseUrl = process.env.BASE_URL ?? "http://localhost:3000";
 
   return NextResponse.json(
     {
       url: {
-        id: data.id,
-        original_url: data.original_url,
-        short_code: data.short_code,
-        expires_at: data.expires_at,
-        created_at: data.created_at,
-        short_url: `${baseUrl}/${data.short_code}`,
+        id: urlData.id,
+        original_url: urlData.original_url,
+        short_code: urlData.short_code,
+        expires_at: urlData.expires_at,
+        created_at: urlData.created_at,
+        short_url: `${baseUrl}/${urlData.short_code}`,
       },
     },
     { status: 201 },

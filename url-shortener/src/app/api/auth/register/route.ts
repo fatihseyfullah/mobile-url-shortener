@@ -24,8 +24,8 @@ export async function POST(request: Request) {
 
   const passwordHash = await hash(password, 10);
 
-  const { data, error } = await supabase
-    .from("users")
+  const { data, error } = await (supabase
+    .from("users") as any)
     .insert({ email, password_hash: passwordHash, name })
     .select("id, email, name, is_admin")
     .single();
@@ -35,13 +35,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Unable to register user" }, { status: 500 });
   }
 
+  const userData = data as any;
   return NextResponse.json(
     {
       user: {
-        id: data.id,
-        email: data.email,
-        name: data.name,
-        is_admin: data.is_admin,
+        id: userData.id,
+        email: userData.email,
+        name: userData.name,
+        is_admin: userData.is_admin,
       },
     },
     { status: 201 },
