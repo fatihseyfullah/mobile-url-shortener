@@ -5,7 +5,10 @@ import { getSupabaseServiceClient } from "./db";
 
 const config = {
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
+  },
+  pages: {
+    signIn: "/login",
   },
   providers: [
     Credentials({
