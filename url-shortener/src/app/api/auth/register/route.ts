@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
+import { sign } from "jsonwebtoken";
 import { getSupabaseServiceClient } from "@/lib/db";
 
 export async function POST(request: Request) {
@@ -36,6 +37,19 @@ export async function POST(request: Request) {
   }
 
   const userData = data as any;
+  
+  // Generate JWT token for mobile app
+  const secret = process.env.NEXTAUTH_SECRET || "default-secret-change-this";
+  const token = sign(
+    { 
+      userId: userData.id, 
+      email: userData.email,
+      is_admin: userData.is_admin 
+    },
+    secret,
+    { expiresIn: "7d" }
+  );
+
   return NextResponse.json(
     {
       user: {
@@ -44,6 +58,7 @@ export async function POST(request: Request) {
         name: userData.name,
         is_admin: userData.is_admin,
       },
+      token,
     },
     { status: 201 },
   );

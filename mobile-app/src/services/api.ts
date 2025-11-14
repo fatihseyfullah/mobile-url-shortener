@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Backend URL'inizi buraya yazın
-const API_URL = 'http://localhost:3000/api'; // Geliştirme için
+const API_URL = 'https://mobile-url-shortener.netlify.app/api'; // Geliştirme için
 // const API_URL = 'https://your-app.netlify.app/api'; // Production için
 
 const api = axios.create({
