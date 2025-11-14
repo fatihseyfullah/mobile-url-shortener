@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { getSupabaseServiceClient } from "@/lib/db";
 import { generateShortCode } from "@/lib/utils";
 
@@ -14,7 +13,7 @@ function isValidUrl(value: string): boolean {
 }
 
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions as any);
+  const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }

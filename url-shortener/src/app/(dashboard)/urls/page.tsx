@@ -1,11 +1,10 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { getSupabaseServiceClient } from "@/lib/db";
 import { UrlListItem } from "@/components/dashboard/UrlListItem";
 import { UrlCreateForm } from "@/components/dashboard/UrlCreateForm";
 
 export default async function UrlsPage() {
-  const session = await getServerSession(authOptions as any);
+  const session = await auth();
 
   if (!session?.user?.id) {
     // App Router'da redirect için redirect() kullanılabilir; basitçe fallback gösteriyoruz

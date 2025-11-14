@@ -1,9 +1,9 @@
-import type { NextAuthOptions } from "next-auth";
+import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { getSupabaseServiceClient } from "./db";
 
-export const authOptions: NextAuthOptions = {
+export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "jwt",
   },
@@ -55,4 +55,4 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-};
+});

@@ -1,5 +1,4 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 
 async function getAdminData() {
   const [statsRes, urlsRes] = await Promise.all([
@@ -15,7 +14,7 @@ async function getAdminData() {
 }
 
 export default async function AdminDashboardPage() {
-  const session = await getServerSession(authOptions as any);
+  const session = await auth();
 
   if (!session?.user?.is_admin) {
     return (

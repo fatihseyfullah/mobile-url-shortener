@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { getSupabaseServiceClient } from "@/lib/db";
 
 interface Params {
@@ -10,7 +9,7 @@ interface Params {
 }
 
 export async function GET(_request: Request, { params }: Params) {
-  const session = await getServerSession(authOptions as any);
+  const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }

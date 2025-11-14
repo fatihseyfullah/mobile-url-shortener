@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { getSupabaseServiceClient } from "@/lib/db";
 
 export async function GET() {
-  const session = await getServerSession(authOptions as any);
+  const session = await auth();
   if (!session?.user?.is_admin) {
     return NextResponse.json({ message: "Forbidden" }, { status: 403 });
   }
