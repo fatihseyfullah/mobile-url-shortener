@@ -16,7 +16,6 @@ export default function CreateUrlScreen({ navigation, route }: any) {
     try {
       await urlService.createUrl({ original_url: originalUrl });
       Alert.alert('Başarılı', 'URL başarıyla oluşturuldu');
-      route.params?.onSuccess?.();
       navigation.goBack();
     } catch (error: any) {
       Alert.alert('Hata', error.response?.data?.message || 'URL oluşturulamadı');

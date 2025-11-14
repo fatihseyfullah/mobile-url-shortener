@@ -12,7 +12,14 @@ export default function DashboardScreen({ navigation }: any) {
 
   useEffect(() => {
     loadUrls();
-  }, []);
+    
+    // Listen for focus event to reload URLs when returning to screen
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadUrls();
+    });
+    
+    return unsubscribe;
+  }, [navigation]);
 
   const loadUrls = async () => {
     setLoading(true);
@@ -41,7 +48,7 @@ export default function DashboardScreen({ navigation }: any) {
 
       <TouchableOpacity 
         style={styles.createButton}
-        onPress={() => navigation.navigate('CreateUrl', { onSuccess: loadUrls })}
+        onPress={() => navigation.navigate('CreateUrl')}
       >
         <Text style={styles.createButtonText}>+ Yeni URL Oluştur</Text>
       </TouchableOpacity>
