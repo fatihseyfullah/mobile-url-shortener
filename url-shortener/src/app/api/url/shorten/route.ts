@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { verify } from "jsonwebtoken";
 import { getSupabaseServiceClient } from "@/lib/db";
 import { generateShortCode } from "@/lib/utils";
 
@@ -13,8 +14,28 @@ function isValidUrl(value: string): boolean {
 }
 
 export async function POST(request: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  let userId: string | undefined;
+
+  // Try JWT token first (for mobile app)
+  const authHeader = request.headers.get("authorization");
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.substring(7);
+    const secret = process.env.NEXTAUTH_SECRET || "default-secret-change-this";
+    try {
+      const decoded = verify(token, secret) as any;
+      userId = decoded.userId;
+    } catch (error) {
+      // Token invalid, will try session auth below
+    }
+  }
+
+  // If no JWT, try NextAuth session (for web app)
+  if (!userId) {
+    const session = await auth();
+    userId = session?.user?.id;
+  }
+
+  if (!userId) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -55,7 +76,7 @@ export async function POST(request: Request) {
     short_code: string;
     expires_at?: string;
   } = {
-    user_id: session.user.id,
+    user_id: userId,
     original_url: originalUrl,
     short_code: shortCode,
   };
