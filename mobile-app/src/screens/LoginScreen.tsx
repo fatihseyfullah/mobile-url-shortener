@@ -18,7 +18,10 @@ export default function LoginScreen({ navigation }: any) {
     try {
       await login({ email, password });
     } catch (error: any) {
-      Alert.alert('Hata', error.response?.data?.message || 'Giriş başarısız');
+      console.error('Login error:', error);
+      console.error('Error response:', error.response?.data);
+      const message = error.response?.data?.message || error.message || 'Giriş başarısız';
+      Alert.alert('Giriş Başarısız', message);
     } finally {
       setLoading(false);
     }
