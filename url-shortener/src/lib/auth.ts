@@ -4,6 +4,7 @@ import { compare } from "bcryptjs";
 import { getSupabaseServiceClient } from "./db";
 
 const config = {
+  trustHost: true,
   session: {
     strategy: "jwt" as const,
   },
